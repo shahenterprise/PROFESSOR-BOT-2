@@ -2,7 +2,7 @@ import logging, os, re, asyncio, requests, aiohttp
 from pyrogram.errors import InputUserDeactivated, UserNotParticipant, FloodWait, UserIsBlocked, PeerIdInvalid                             
 from pyrogram.types import Message, InlineKeyboardButton
 from pyrogram import filters, enums
-from info import AUTH_CHANNEL, LONG_IMDB_DESCRIPTION, MAX_LIST_ELM, SHORT_URL, SHORT_API
+from info import AUTH_CHANNEL, LONG_IMDB_DESCRIPTION, MAX_LIST_ELM, SHORT_URL, SHORT_API, BLACKLIST_WORDS
 from imdb import Cinemagoer
 from typing import Union, List
 from datetime import datetime, timedelta
@@ -137,10 +137,10 @@ def list_to_str(k):
     else:
         return ' '.join(f'{elem}, ' for elem in k)
 
-__repo__ = "https://github.com/MrMKN/PROFESSOR-BOT"
-__version__ = "PROFESSOR-BOT ᴠ4.5.0"
+__repo__ = "https://github.com/sandippshah/PROFESSOR-BOT"
+__version__ = "SHAHO-BOT ᴠ4.5.0"
 __license__ = "GNU GENERAL PUBLIC LICENSE V2"
-__copyright__ = "Copyright (C) 2023-present MrMKN <https://github.com/MrMKN>"
+__copyright__ = "Copyright (C) 2023-present SHAHO 😎"
 
 async def search_gagala(text):
     usr_agent = {
@@ -359,8 +359,14 @@ async def admin_check(message: Message) -> bool:
 async def admin_filter(filt, client, message):
     return await admin_check(message)
 
+def replace_username(text):
+    prohibitedWords = BLACKLIST_WORDS
+    big_regex = re.compile('|'.join(map(re.escape, prohibitedWords)))
+    text = big_regex.sub("", text)
 
+    usernames = re.findall("([@][A-Za-z0-9_]+)", text)
+    for i in usernames:
+        text = text.replace(i, "")
 
-
-
-
+    return text
+    
